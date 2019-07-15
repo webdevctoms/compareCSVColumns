@@ -1,9 +1,13 @@
-function App(dropZoneID,downloadID){
+function App(dropZoneID,downloadID,selectDiv){
 	this.csvDropZone = document.getElementById(dropZoneID);
 	this.downloadLink = document.getElementById(downloadID);
+	this.selectDiv = document.getElementById(selectDiv);
 
+	this.options1 = [];
+	this.options2 = [];
 	this.commaSplitData;
 	this.captureCSV = new CaptureCSV();
+	this.captureColumns = new CaptureColumns();
 }
 
 App.prototype.initApp = function() {
@@ -39,6 +43,12 @@ App.prototype.createDownload = function(csvData){
 	this.downloadLink.setAttribute("download", "new_data.csv");
 };
 
+App.prototype.updateSelect = function(selectNode,options){
+	for(let i = 0;i < options.length; i++){
+		
+	}
+};
+
 App.prototype.fileDropped = function(event){
 	let csvFile = event.dataTransfer.items[0].getAsFile();
 	this.captureCSV.readFile(csvFile)
@@ -46,6 +56,9 @@ App.prototype.fileDropped = function(event){
 	.then(commaSplitData => {
 		this.commaSplitData = commaSplitData;
 		console.log(this.commaSplitData);
+		let options = this.captureColumns.getOptions(this.commaSplitData[0])
+		console.log(options);
+		let selectNode = document.createElement("SELECT");
 		let csvData = this.createBlob(this.commaSplitData);
 		this.createDownload(csvData);
 	})
@@ -56,5 +69,5 @@ App.prototype.fileDropped = function(event){
 	//console.log(this.commaSplitData);
 };
 
-let app = new App("drop_zone","downloadLink");
+let app = new App("drop_zone","downloadLink","selectDiv");
 window.onload = app.initApp();
